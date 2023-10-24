@@ -19,21 +19,6 @@ typedef vector<int> vi;
 const int N=1e6+7;
 const int MOD=1e9+7;
 const ll INF=(ll)1e18+7;
-vector<ii> a[N];
-int dp[N];
-void dfs(int u, int p = 0, int id = 0) {
-    dp[u] = 0;
-    for (ii e:a[u]) {
-        int v = e.F;
-        int nid = e.S;
-        if (v == p) continue;
-        dfs(v, u, nid);
-        if (nid < id)
-            dp[u] = max(dp[u], dp[v] + 1);
-        else 
-            dp[u] = max(dp[u], dp[v]);
-    }
-}
 
 int main() {
     #ifdef TriPhan
@@ -44,20 +29,25 @@ int main() {
         cin.tie(0);
     #endif
     int t; cin >> t;
-    while(t--) {
-        int n;
-        cin >> n;
-        FOR(i, 1, n) {
-            a[i].clear();
-            dp[i] = 0;
+    while (t--) {
+        int n; cin >> n;
+        vector<ii> a(n);
+        int cnt = 0;
+        ll sumL = 0, sumR = 0;
+        for (ii &x:a) {
+            cin >> x.F;
+            x.S = cnt++;
+            sumR += x.F;
         }
-        FOr(i, 1, n) {
-            int u, v;
-            cin >> u >> v;
-            a[u].pb({v, i});
-            a[v].pb({u, i});
+        sort(all(a));
+        vector<ll> ans(n);
+        for (ll i = 0; i < n; i++) {
+            ans[a[i].S] = i * a[i].F - sumL + sumR - (n - i) * a[i].F + n;
+            sumL += a[i].F;
+            sumR -= a[i].F;
         }
-        dfs(1, 0);
-        cout << dp[1] + 1 << "\n";
+        for (ll x:ans)
+            cout << x << " ";
+        cout << "\n";        
     }
 }

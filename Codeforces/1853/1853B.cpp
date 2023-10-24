@@ -28,27 +28,30 @@ int main() {
         ios_base::sync_with_stdio(0);
         cin.tie(0);
     #endif
-    int t;
-    cin >> t;
+    int t; cin >> t;
+    ii cnt[40];
+    cnt[0] = {1, 0};
+    cnt[1] = {0, 1};
+    FOR(i, 2, 33)
+        cnt[i] = {cnt[i - 1].F + cnt[i - 2].F, cnt[i - 1].S + cnt[i - 2].S};
     while (t--) {
-        int n; cin >> n;
-        vector<int> a(n), b(n);
-        for (int &x:a) cin >> x;
-        for (int &x:b) cin >> x;
-        vector<int> s1(n, 1), s2(n, 1);
-        vector<int> cnt1(2 * n, 0), cnt2(2 * n, 0);
-        cnt1[a[n - 1] - 1] = cnt2[b[n - 1] - 1] = 1;
-        FOD(i, n - 2, 0) {
-            if (a[i] == a[i + 1])
-                s1[i] = s1[i + 1] + 1;
-            if (b[i] == b[i + 1])
-                s2[i] = s2[i + 1] + 1;
-            cnt1[a[i] - 1] = max(cnt1[a[i] - 1], s1[i]);
-            cnt2[b[i] - 1] = max(cnt2[b[i] - 1], s2[i]);
+        int n, k;
+        cin >> n >> k;
+        // ax + by = n
+        if (k > 31) {
+            cout << "0\n";
+            continue;
         }
-        int ans = 1;
-        FOR(i, 1, 2 * n)
-            ans = max(ans, cnt1[i - 1] + cnt2[i - 1]);
+        int a = cnt[k - 1].F;
+        int b = cnt[k - 1].S;
+        // cout << a << " " << b << " ";
+        // want: a < b;
+        int ans = 0;
+        for (int x = 0; a * x <= n; x++) {
+            int y = (n - a * x) / b;
+            if (x <= y && a*x + b * y == n)
+            ++ans;
+        }
         cout << ans << "\n";
     }
 }
